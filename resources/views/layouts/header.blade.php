@@ -46,6 +46,4 @@
     </form>
 
     <br>
-
-    <a href="#" style="font-weight: bold;">+ Thêm sản phẩm</a>
 </header>
