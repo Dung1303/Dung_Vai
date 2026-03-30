@@ -6,105 +6,89 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Session;
-use Symfony\Component\Console\Input\Input;
-
-
-use function PHPUnit\Framework\isNull;
 
 class UserController extends Controller
 {
+    // ĐĂNG NHẬP
     public function Login(Request $request)
     {
-        $login = [
-            'name' => $request->input('name'),
-            'password' => $request->input('password')
-        ];
-        if (Auth::attempt($login)) {
-            $user = Auth::user();
-            Session::put('user', $user);
-            echo '<script>alert("Đăng nhập thành công.");window.location.assign("trangchu");</script>';
-        } else {
-            echo '<script>alert("Đăng nhập thất bại.");window.location.assign("login");</script>';
+        $credentials = $request->only('name', 'password');
+
+        if (Auth::attempt($credentials)) {
+            return redirect('trangchu')->with('success', 'Đăng nhập thành công.');
         }
+
+        return redirect('login')->with('error', 'Tên hoặc mật khẩu không đúng.');
     }
+
+    // ĐĂNG XUẤT
     public function Logout(Request $request)
-{
-    Auth::logout();
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect('/login');
+    }
 
-    // 2. Xóa cái session 'user' mà bạn tự tạo
-    $request->session()->forget('user');
-    $request->session()->invalidate();
-    $request->session()->regenerateToken();
-    return redirect('/trangchu')->with('success', 'Đã đăng xuất thành công!');
-}
-
+    // HIỂN THỊ FORM ĐĂNG KÝ
     public function GetUser()
     {
         return view('users.register');
     }
+
+    // XỬ LÝ ĐĂNG KÝ
     public function Register(Request $request)
     {
-        $input = $request->validate([
-            'name' => 'required|string',
-            'email' => 'required|email|unique:users',
-            'password' => 'required',
+        $request->validate([
+            'name' => 'required|string|unique:users',
+            'password' => 'required|min:6',
             'c_password' => 'required|same:password'
         ]);
 
-        $input['password'] = bcrypt($input['password']);
-        User::create($input);
+        User::create([
+            'name' => $request->name,
+            'password' => Hash::make($request->password),
+        ]);
 
-        echo '<script>alert("Đăng ký thành công. Vui lòng đăng nhập.");window.location.assign("login");</script>';
+        return redirect('login')->with('success', 'Đăng ký thành công!');
     }
-    public function index() {
-    $users = \App\Models\User::all();
-    return view('users.index', compact('users'));
-}
-public function destroy($id) // Biến $id phải nằm trong ngoặc này
+
+    // DANH SÁCH USER
+    public function index() 
     {
-        // 1. Tìm user theo ID
+        $users = User::all();
+        return view('users.index', compact('users'));
+    }
+
+    // XÓA USER
+    public function destroy($id)
+    {
         $user = User::find($id);
 
-        // 2. Kiểm tra nếu có user thì mới xóa
         if ($user) {
-            
-            // Bảo mật: Không cho phép tự xóa chính mình khi đang đăng nhập
             if ($user->id == Auth::id()) {
                 return redirect()->back()->with('error', 'Bạn không thể tự xóa chính mình!');
             }
-
-            $user->delete(); // Lệnh xóa thực sự
-            return redirect()->back()->with('success', 'Đã xóa người dùng thành công!');
+            $user->delete();
+            return redirect()->back()->with('success', 'Đã xóa người dùng.');
         }
 
-        // 3. Nếu không tìm thấy user
-        return redirect()->back()->with('error', 'Người dùng không tồn tại.');
+        return redirect()->back()->with('error', 'Không tìm thấy người dùng.');
     }
-    // Hàm này có nhiệm vụ: Khi bạn nhấn "Thêm mới", nó sẽ mở file view create lên
-public function create()
-{
-    return view('users.create'); 
-}
 
-// Hàm này có nhiệm vụ: Nhận dữ liệu từ Form và lưu vào Database
-public function store(Request $request)
-{
-    // 1. Kiểm tra dữ liệu nhập vào (Validate)
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'email' => 'required|email|unique:users',
-        'password' => 'required|min:6',
-    ]);
+    // THÊM USER MỚI (Admin)
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|unique:users',
+            'password' => 'required|min:6',
+        ]);
 
-    // 2. Tạo User mới
-    \App\Models\User::create([
-        'name' => $request->name,
-        'email' => $request->email,
-        'password' => Hash::make($request->password), // Nhớ mã hóa mật khẩu!
-    ]);
+        User::create([
+            'name' => $request->name,
+            'password' => Hash::make($request->password),
+        ]);
 
-    // 3. Xong thì quay lại trang danh sách và báo thành công
-    return redirect()->route('users.index')->with('success', 'Thêm User mới thành công!');
-}
+        return redirect()->route('users.index')->with('success', 'Thêm mới thành công!');
+    }
 }
