@@ -16,17 +16,17 @@ class TrangChuController extends Controller
         $query->where('name', 'like', '%' . $request->keyword . '%');
     }
 
-    // 📂 Lọc theo category
+    // Lọc theo category
     if ($request->category) {
         $query->where('category_id', $request->category);
     }
 
-    // 💰 Lọc theo giá tối đa
+    // Lọc theo giá tối đa
     if ($request->price) {
         $query->where('price', '<=', $request->price);
     }
 
-    // 🔽 Sắp xếp
+    // Sắp xếp
     if ($request->sort == 'price_asc') {
         $query->orderBy('price', 'asc');
     } elseif ($request->sort == 'price_desc') {
