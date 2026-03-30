@@ -1,0 +1,85 @@
+/* Reset toàn trang */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background: #f0f2f5;
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+/* Căn giữa tuyệt đối */
+.auth-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Hộp Form */
+.beta-form-checkout {
+    background: #fff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    width: 400px; /* Độ rộng cố định cho đẹp */
+}
+
+h4 {
+    text-align: center;
+    font-size: 26px;
+    margin: 0 0 25px 0;
+    color: #1c1e21;
+}
+
+.form-block {
+    margin-bottom: 15px;
+}
+
+.form-block label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #4b4f56;
+}
+
+.form-block input {
+    width: 100%;
+    height: 45px;
+    padding: 0 15px;
+    border: 1px solid #dddfe2;
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+.btn-primary {
+    width: 100%;
+    height: 50px;
+    background: #1877f2;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.btn-primary:hover { background: #166fe5; }
+
+.auth-footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+.alert-error {
+    color: white;
+    background: #f02849;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.back-home { color: #606770; text-decoration: none; display: block; margin-top: 10px; }

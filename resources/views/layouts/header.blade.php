@@ -9,17 +9,16 @@
         {{-- Đã đăng nhập --}}
         Xin chào, <strong>{{ Auth::user()->name }}</strong> |
 
-        <form action="{{ route('logout') }}" method="POST" style="display: inline;">
-            @csrf
-            <button type="submit" style="border:none; background:none; color:blue; cursor:pointer;">
-                Logout
-            </button>
-        </form>
+        <a href="{{ route('logout') }}" 
+        style="text-decoration: none; color: blue; font-weight: bold;" 
+        onclick="return confirm('Bạn có chắc chắn muốn đăng xuất?')">
+            Logout
+        </a>
 
         @else
         {{-- Chưa đăng nhập --}}
-        <a href="#">Đăng nhập</a> |
-        <a href="#">Đăng ký</a>
+        <a href="/login">Đăng nhập</a> |
+        <a href="/register">Đăng ký</a>
         @endauth
 
     </div>

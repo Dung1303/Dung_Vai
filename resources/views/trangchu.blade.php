@@ -5,7 +5,9 @@
 @section('content')
 
 {{-- Link Users --}}
-<a href="#" style="display:block; margin-bottom:10px;">Users</a>
+<a href="{{ route('users.index') }}" style="display:block; margin-bottom:10px; font-weight: bold; color: green;">
+     Quản lý Users
+</a>
 
 {{-- Nút thêm sản phẩm --}}
 <a href="{{ route('products.create') }}" style="font-weight: bold;">
