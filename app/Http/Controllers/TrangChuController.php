@@ -7,11 +7,37 @@ use App\Models\Product;
 
 class TrangChuController extends Controller
 {
-   public function index()
+   public function index(Request $request)
 {
-    // Lấy sản phẩm + category
-    $products = Product::with('category')->get();
+    $query = Product::with('category');
 
-    return view('trangchu', compact('products'));
+    // 🔍 Tìm theo tên
+    if ($request->keyword) {
+        $query->where('name', 'like', '%' . $request->keyword . '%');
+    }
+
+    // 📂 Lọc theo category
+    if ($request->category) {
+        $query->where('category_id', $request->category);
+    }
+
+    // 💰 Lọc theo giá tối đa
+    if ($request->price) {
+        $query->where('price', '<=', $request->price);
+    }
+
+    // 🔽 Sắp xếp
+    if ($request->sort == 'price_asc') {
+        $query->orderBy('price', 'asc');
+    } elseif ($request->sort == 'price_desc') {
+        $query->orderBy('price', 'desc');
+    }
+
+    $products = $query->get();
+
+    // Lấy categories để đổ dropdown
+    $categories = \App\Models\Category::all();
+
+    return view('trangchu', compact('products', 'categories'));
 }
 }
