@@ -28,7 +28,9 @@ Route::middleware(['auth'])->group(function () {
     
     // Quản lý Users
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    // Trang hiển thị form thêm mới
     Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+    // Xử lý lưu dữ liệu từ form gửi lên
     Route::post('/users/store', [UserController::class, 'store'])->name('users.store');
     Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
 

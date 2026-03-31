@@ -32,7 +32,7 @@
 
         <div class="text-center">
             <p>Nếu chưa có tài khoản vui lòng <a href="/register">Đăng ký</a>!</p>
-            <a href="{{ route('trangchu') }}" style="font-size: 14px; color: #666;">← Quay lại trang chủ</a>
+            <a href="{{ route('trangchu') }}" style="font-size: 14px; color: #666;"> Quay lại trang chủ</a>
         </div>
     </form>
 </div>

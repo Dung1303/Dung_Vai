@@ -38,28 +38,39 @@ class UserController extends Controller
 
     // XỬ LÝ ĐĂNG KÝ
     public function Register(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|unique:users',
-            'password' => 'required|min:6',
-            'c_password' => 'required|same:password'
-        ]);
+{
+    // 1. Kiểm tra dữ liệu (Validate)
+    $request->validate([
+        'name'     => 'required|string|unique:users',
+        'email'    => 'required|email|unique:users',
+        'password' => 'required|min:6|confirmed', 
+    ], [
+        'name.unique'     => 'Tên đăng nhập đã tồn tại.',
+        'email.unique'    => 'Email này đã được sử dụng.',
+        'password.confirmed' => 'Mật khẩu nhập lại không khớp.',
+        'password.min'    => 'Mật khẩu phải có ít nhất 6 ký tự.',
+    ]);
 
-        User::create([
-            'name' => $request->name,
-            'password' => Hash::make($request->password),
-        ]);
+    // 2. Tạo User
+    User::create([
+        'name'     => $request->name,
+        'email'    => $request->email,
+        'password' => Hash::make($request->password),
+    ]);
 
-        return redirect('login')->with('success', 'Đăng ký thành công!');
-    }
-
+    return redirect('login')->with('success', 'Đăng ký thành công!');
+}
     // DANH SÁCH USER
     public function index() 
     {
         $users = User::all();
         return view('users.index', compact('users'));
     }
-
+    // HIỂN THỊ FORM THÊM MỚI USER
+    public function create()
+    {
+        return view('users.create');
+    }
     // XÓA USER
     public function destroy($id)
     {
@@ -76,19 +87,27 @@ class UserController extends Controller
         return redirect()->back()->with('error', 'Không tìm thấy người dùng.');
     }
 
-    // THÊM USER MỚI (Admin)
-    public function store(Request $request)
-    {
+    // 3. Xử lý lưu dữ liệu
+    public function store(Request $request) {
+        // Kiểm tra dữ liệu đầu vào
         $request->validate([
-            'name' => 'required|string|unique:users',
+            'name'  => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6',
+        ], [
+            'name.required' => 'Vui lòng nhập họ tên.',
+            'email.unique'  => 'Email này đã tồn tại.',
+            'password.min'  => 'Mật khẩu phải từ 6 ký tự.',
         ]);
 
+        // Lưu vào Database
         User::create([
-            'name' => $request->name,
-            'password' => Hash::make($request->password),
+            'name'     => $request->name,
+            'email'    => $request->email,
+            'password' => Hash::make($request->password), // Mã hóa mật khẩu
         ]);
 
-        return redirect()->route('users.index')->with('success', 'Thêm mới thành công!');
+        // Quay về trang danh sách kèm thông báo
+        return redirect()->route('users.index')->with('success', 'Thêm người dùng thành công!');
     }
 }

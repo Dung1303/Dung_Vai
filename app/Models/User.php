@@ -12,6 +12,7 @@ class User extends Authenticatable
     // Cho phép lưu các cột này vào database
     protected $fillable = [
         'name',
+        'email',
         'password',
     ];
 

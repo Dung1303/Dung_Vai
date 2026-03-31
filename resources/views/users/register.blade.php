@@ -34,7 +34,6 @@
 
             <div class="form-block">
                 <label for="c_password">Re-password*</label>
-                {{-- Lưu ý: name phải là password_confirmation thì Laravel mới hiểu --}}
                 <input type="password" id="c_password" name="password_confirmation" required placeholder="Nhập lại mật khẩu">
             </div>
 
